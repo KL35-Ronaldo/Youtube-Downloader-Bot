@@ -1,6 +1,5 @@
-import subprocess as sp
 import json
-
+import subprocess as sp
 
 def probe(vid_file_path):
     """
@@ -10,18 +9,18 @@ def probe(vid_file_path):
     if type(vid_file_path) != str:
         raise Exception('Give ffprobe a full file path of the file')
 
-    command = ["ffprobe",
-               "-loglevel", "quiet",
-               "-print_format", "json",
-               "-show_format",
-               "-show_streams",
-               vid_file_path
-               ]
+    command = [
+        "ffprobe",
+        "-loglevel", "quiet",
+        "-print_format", "json",
+        "-show_format",
+        "-show_streams",
+        vid_file_path
+    ]
 
     pipe = sp.Popen(command, stdout=sp.PIPE, stderr=sp.STDOUT)
     out, err = pipe.communicate()
     return json.loads(out)
-
 
 def duration(vid_file_path):
     """

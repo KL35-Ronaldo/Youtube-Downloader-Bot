@@ -1,25 +1,30 @@
 from __future__ import unicode_literals
-from pyrogram import Client, Filters, StopPropagation, InlineKeyboardButton, InlineKeyboardMarkup
+import asyncio
 import youtube_dl
 from utils.util import humanbytes
-import asyncio
+from pyrogram import InlineKeyboardButton
 
 
 def buttonmap(item):
     quality = item['format']
     if "audio" in quality:
-        return [InlineKeyboardButton(f"{quality} 🎵 {humanbytes(item['filesize'])}",
-                                     callback_data=f"ytdata||audio||{item['format_id']}||{item['yturl']}")]
+        return [
+            InlineKeyboardButton(
+                f"{quality} 🎧 {humanbytes(item['filesize'])}",
+                callback_data=f"ytdata||audio||{item['format_id']}||{item['yturl']}"
+            )
+        ]
     else:
-        return [InlineKeyboardButton(f"{quality} 📹 {humanbytes(item['filesize'])}",
-                                     callback_data=f"ytdata||video||{item['format_id']}||{item['yturl']}")]
+        return [
+            InlineKeyboardButton(
+                f"{quality} 🎥 {humanbytes(item['filesize'])}",
+                callback_data=f"ytdata||video||{item['format_id']}||{item['yturl']}"
+            )
+        ]
 
-# Return a array of Buttons
 def create_buttons(quailitylist):
     return map(buttonmap, quailitylist)
 
-
-# extract Youtube info
 def extractYt(yturl):
     ydl = youtube_dl.YoutubeDL()
     with ydl:
@@ -29,8 +34,13 @@ def extractYt(yturl):
             # Filter dash video(without audio)
             if not "dash" in str(format['format']).lower():
                 qualityList.append(
-                {"format": format['format'], "filesize": format['filesize'], "format_id": format['format_id'],
-                 "yturl": yturl})
+                    {
+                        "format": format['format'],
+                        "filesize": format['filesize'],
+                        "format_id": format['format_id'],
+                        "yturl": yturl
+                    }
+                )
 
         return r['title'], r['thumbnail'], qualityList
 

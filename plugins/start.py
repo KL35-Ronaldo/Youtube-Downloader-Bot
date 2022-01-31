@@ -1,14 +1,6 @@
-from pyrogram import Client, Filters, StopPropagation, InlineKeyboardButton, InlineKeyboardMarkup
+from pyrogram import Client, Filters
 
-
-@Client.on_message(Filters.command(["start"]), group=-2)
-async def start(client, message):
-    # return
-    joinButton = InlineKeyboardMarkup([
-        [InlineKeyboardButton("Channel", url="https://t.me/aryan_bots")],
-        [InlineKeyboardButton(
-            "Report Bugs 😊", url="https://t.me/aryanvikash")]
-    ])
-    welcomed = f"Hey <b>{message.from_user.first_name}</b>\n/help for More info"
-    await message.reply_text(welcomed, reply_markup=joinButton)
-    raise StopPropagation
+@Client.on_message(Filters.command(["start"]))
+async def send_start(client, message):
+    helptxt = f"Just Send Me A **YouTube Video URL**"
+    await message.reply_text(helptxt)

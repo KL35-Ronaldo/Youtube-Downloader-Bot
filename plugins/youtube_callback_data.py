@@ -1,19 +1,11 @@
-import asyncio
 import os
-
-from pyrogram import (Client,
-                      InlineKeyboardButton,
-                      InlineKeyboardMarkup,
-                      ContinuePropagation,
-                      InputMediaDocument,
-                      InputMediaVideo,
-                      InputMediaAudio)
-
-from helper.ffmfunc import duration
-from helper.ytdlfunc import downloadvideocli, downloadaudiocli
+import asyncio
 from PIL import Image
-from hachoir.metadata import extractMetadata
+from helper.ffmfunc import duration
 from hachoir.parser import createParser
+from hachoir.metadata import extractMetadata
+from helper.ytdlfunc import downloadvideocli, downloadaudiocli
+from pyrogram import Client, InlineKeyboardButton, InlineKeyboardMarkup, InputMediaDocument, InputMediaVideo, InputMediaAudio
 
 @Client.on_callback_query()
 async def catch_youtube_fmtid(c, m):
@@ -24,18 +16,37 @@ async def catch_youtube_fmtid(c, m):
         media_type = cb_data.split("||")[-3].strip()
         print(media_type)
         if media_type == 'audio':
-            buttons = InlineKeyboardMarkup([[InlineKeyboardButton(
-                "Audio", callback_data=f"{media_type}||{format_id}||{yturl}"), InlineKeyboardButton("Document",
-                                                                                                    callback_data=f"docaudio||{format_id}||{yturl}")]])
+            buttons = InlineKeyboardMarkup(
+                [
+                    [
+                        InlineKeyboardButton(
+                            "Audio",
+                            callback_data=f"{media_type}||{format_id}||{yturl}"
+                        ),
+                        InlineKeyboardButton(
+                            "Document",
+                            callback_data=f"docaudio||{format_id}||{yturl}"
+                        )
+                    ]
+                ]
+            )
         else:
-            buttons = InlineKeyboardMarkup([[InlineKeyboardButton(
-                "Video", callback_data=f"{media_type}||{format_id}||{yturl}"), InlineKeyboardButton("Document",
-                                                                                                    callback_data=f"docvideo||{format_id}||{yturl}")]])
+            buttons = InlineKeyboardMarkup(
+                [
+                    [
+                        InlineKeyboardButton(
+                            "Video",
+                            callback_data=f"{media_type}||{format_id}||{yturl}"
+                            ),
+                        InlineKeyboardButton(
+                            "Document",
+                            callback_data=f"docvideo||{format_id}||{yturl}"
+                        )
+                    ]
+                ]
+            )
 
         await m.edit_message_reply_markup(buttons)
-
-    else:
-        raise ContinuePropagation
 
 
 @Client.on_callback_query()
@@ -66,7 +77,6 @@ async def catch_youtube_dldata(c, q):
      #   print(thumb_image_path)
     if not cb_data.startswith(("video", "audio", "docaudio", "docvideo")):
         print("no data found")
-        raise ContinuePropagation
 
     filext = "%(title)s.%(ext)s"
     userdir = os.path.join(os.getcwd(), "downloads", str(q.message.chat.id))

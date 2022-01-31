@@ -1,14 +1,13 @@
-from datetime import datetime, timedelta
-from pyrogram import Client, Filters, InlineKeyboardMarkup, InlineKeyboardButton
+import os
+import wget
+from PIL import Image
 from bot import user_time
 from config import youtube_next_fetch
+from datetime import datetime, timedelta
 from helper.ytdlfunc import extractYt, create_buttons
-import wget
-import os
-from PIL import Image
+from pyrogram import Client, Filters, InlineKeyboardMarkup
 
 ytregex = r"^((?:https?:)?\/\/)?((?:www|m)\.)?((?:youtube\.com|youtu.be))(\/(?:[\w\-]+\?v=|embed\/|v\/)?)([\w\-]+)(\S+)?$"
-
 
 @Client.on_message(Filters.regex(ytregex))
 async def ytdl(_, message):
@@ -27,14 +26,13 @@ async def ytdl(_, message):
         title, thumbnail_url, formats = extractYt(url)
 
         now = datetime.now()
-        user_time[message.chat.id] = now + \
-                                     timedelta(minutes=youtube_next_fetch)
+        user_time[message.chat.id] = now + timedelta(minutes=youtube_next_fetch)
 
     except Exception:
-        await message.reply_text("`Failed To Fetch Youtube Data... 😔 \nPossible Youtube Blocked server ip \n#error`")
+        await message.reply_text("`Failed To Fetch Youtube Data... 😔 \nPossible Youtube Blocked Server IP \n#Error`")
         return
     buttons = InlineKeyboardMarkup(list(create_buttons(formats)))
-    sentm = await message.reply_text("Processing Youtube Url 🔎 🔎 🔎")
+    sentm = await message.reply_text("Processing Youtube URL... ⏳")
     try:
         # Todo add webp image support in thumbnail by default not supported by pyrogram
         # https://www.youtube.com/watch?v=lTTajzrSkCw
@@ -50,9 +48,8 @@ async def ytdl(_, message):
     except Exception as e:
         print(e)
         try:
-            thumbnail_url = "https://telegra.ph/file/ce37f8203e1903feed544.png"
+            thumbnail_url = "https://yt3.ggpht.com/584JjRp5QMuKbyduM_2k5RlXFqHJtQ0qLIPZpwbUjMJmgzZngHcam5JMuZQxyzGMV5ljwJRl0Q=s900-c-k-c0x00ffffff-no-rj"
             await message.reply_photo(thumbnail_url, caption=title, reply_markup=buttons)
         except Exception as e:
             await sentm.edit(
             f"<code>{e}</code> #Error")
-
