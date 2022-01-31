@@ -49,7 +49,7 @@ async def catch_youtube_fmtid(c, m):
         await m.edit_message_reply_markup(buttons)
 
 
-@Client.on_callback_query()
+@Client.on_callback_query(group=1)
 async def catch_youtube_dldata(c, q):
     cb_data = q.data.strip()
     #print(q.message.chat.id)
