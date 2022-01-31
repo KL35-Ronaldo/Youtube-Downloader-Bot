@@ -1,22 +1,19 @@
-from pyrogram import Client
 import config
+from pyrogram import Client
 
 DOWNLOAD_LOCATION = "./Downloads"
 BOT_TOKEN = config.BOT_TOKEN
-
-APP_ID = config.APP_ID
+API_ID = config.API_ID
 API_HASH = config.API_HASH
 
 
-plugins = dict(
-    root="plugins",
+Bot = Client(
+    session_name="YouTube-DL-Bot",
+    bot_token=BOT_TOKEN,
+    api_id=API_ID,
+    api_hash=API_HASH,
+    plugins={'root': 'plugins'},
+    workers=100
 )
 
-Client(
-    "YouTubeDlBot",
-    bot_token=BOT_TOKEN,
-    api_id=APP_ID,
-    api_hash=API_HASH,
-    plugins=plugins,
-    workers=100
-).run()
+Bot.run()
