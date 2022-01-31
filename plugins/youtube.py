@@ -2,7 +2,7 @@ import os
 import wget
 from PIL import Image
 from bot import user_time
-from config import youtube_next_fetch
+from config import YOUTUBE_NEXT_FETCH
 from datetime import datetime, timedelta
 from helper.ytdlfunc import extractYt, create_buttons
 from pyrogram import Client, Filters, InlineKeyboardMarkup
@@ -26,7 +26,7 @@ async def ytdl(_, message):
         title, thumbnail_url, formats = extractYt(url)
 
         now = datetime.now()
-        user_time[message.chat.id] = now + timedelta(minutes=youtube_next_fetch)
+        user_time[message.chat.id] = now + timedelta(minutes=YOUTUBE_NEXT_FETCH)
 
     except Exception:
         await message.reply_text("`Failed To Fetch Youtube Data... 😔 \nPossible Youtube Blocked Server IP \n#Error`")
